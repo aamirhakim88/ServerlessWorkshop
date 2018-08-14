@@ -1,0 +1,209 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Chaos Trader
+
+  Serverless Optimization Test Workload
+
+  '
+Outputs:
+  APIEndpoint:
+    Description: API Gateway Url
+    Value:
+      Fn::Sub: https://${ChaosTraderAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  APIGWId:
+    Description: API Gateway Id
+    Value:
+      Ref: ChaosTraderAPI
+  LambdaExecRoleArn:
+    Description: Lambda Exec Role ARN
+    Export:
+      Name: LambdaExecRoleArn
+    Value:
+      Fn::GetAtt:
+      - LambdaIAMRole
+      - Arn
+  MasterLambdaARN:
+    Description: Master Lambda Arn
+    Value:
+      Fn::GetAtt:
+      - MasterLambda
+      - Arn
+  StatusLambdaARN:
+    Description: Worker Lambda Arn
+    Value:
+      Fn::GetAtt:
+      - StatusLambda
+      - Arn
+  UIBucketURL:
+    Description: URL for ChaosTrader UI
+    Value:
+      Fn::GetAtt:
+      - S3BucketForUI
+      - WebsiteURL
+  WorkerLambdaARN:
+    Description: Worker Lambda Arn
+    Value:
+      Fn::GetAtt:
+      - WorkerLambda
+      - Arn
+Resources:
+  ChaosTraderAPI:
+    Properties:
+      Cors:
+        AllowOrigin: '''*'''
+      DefinitionBody:
+        basePath: /
+        definitions:
+          Symbols:
+            items:
+              type: string
+            type: array
+        info:
+          description: ChaosTrader API
+          title: ChaosTrader API
+          version: 1.0.0
+        paths:
+          /symbol:
+            get:
+              responses: {}
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${StatusLambda.Arn}/invocations
+          /symbols:
+            post:
+              responses: {}
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MasterLambda.Arn}/invocations
+        swagger: '2.0'
+      Name: ChaosTraderAPI
+      StageName: Prod
+    Type: AWS::Serverless::Api
+  DynamoDB:
+    Properties:
+      PrimaryKey:
+        Name: symbol
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 120
+        WriteCapacityUnits: 120
+      TableName: ChaosTrader
+    Type: AWS::Serverless::SimpleTable
+  LambdaIAMPolicy:
+    DependsOn: LambdaIAMRole
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          - dynamodb:BatchGetItem
+          - cloudwatch:PutMetricData
+          - xray:PutTelemetryRecords
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+          - xray:PutTraceSegments
+          - cloudformation:DescribeStacks
+          - lambda:InvokeFunction
+          Effect: Allow
+          Resource: '*'
+        Version: '2012-10-17'
+      PolicyName:
+        Fn::Join:
+        - ''
+        - - ChaosTrader-LambdaExec-Policy-
+          - Ref: AWS::AccountId
+      Roles:
+      - Ref: LambdaIAMRole
+    Type: AWS::IAM::Policy
+  LambdaIAMRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+    Type: AWS::IAM::Role
+  MasterLambda:
+    DependsOn: LambdaIAMRole
+    Properties:
+      CodeUri: s3://workshop-2018-deployment-850057438846/1526a24ce068666da5615d72c799ffc4
+      Events:
+        ChaosTraderSymbols:
+          Properties:
+            Method: post
+            Path: /symbols
+            RestApiId:
+              Ref: ChaosTraderAPI
+          Type: Api
+      Handler: lambda.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaIAMRole
+        - Arn
+      Runtime: python3.6
+      Tags:
+        Name: ChaosTraderMaster
+      Timeout: 180
+      Tracing: Active
+    Type: AWS::Serverless::Function
+  S3BucketForUI:
+    Properties:
+      AccessControl: PublicRead
+      BucketName:
+        Fn::Join:
+        - ''
+        - - chaostraderwebsitebucket
+          - Ref: AWS::AccountId
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+    Type: AWS::S3::Bucket
+  StatusLambda:
+    DependsOn: LambdaIAMRole
+    Properties:
+      CodeUri: s3://workshop-2018-deployment-850057438846/86c1613b50ac3f15875cac90d66cfa1f
+      Events:
+        ChaosTraderSymbol:
+          Properties:
+            Method: get
+            Path: /symbol
+            RestApiId:
+              Ref: ChaosTraderAPI
+          Type: Api
+      Handler: lambda.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaIAMRole
+        - Arn
+      Runtime: python3.6
+      Tags:
+        Name: ChaosTraderStatus
+      Timeout: 180
+      Tracing: Active
+    Type: AWS::Serverless::Function
+  WorkerLambda:
+    DependsOn: LambdaIAMRole
+    Properties:
+      CodeUri: s3://workshop-2018-deployment-850057438846/6b202263540956d4386115a92569e83f
+      Handler: lambda.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaIAMRole
+        - Arn
+      Runtime: python3.6
+      Tags:
+        Name: ChaosTraderWorker
+      Timeout: 180
+      Tracing: Active
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

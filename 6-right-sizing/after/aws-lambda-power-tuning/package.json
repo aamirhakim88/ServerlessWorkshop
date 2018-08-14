@@ -1,0 +1,37 @@
+{
+  "name": "aws-lambda-power-tuning",
+  "version": "0.0.1",
+  "description": "Step Functions state machine generator for AWS Lambda Power Tuning",
+  "author": "Alex Casalboni <alex@cloudacademy.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexcasalboni/aws-lambda-power-tuning"
+  },
+  "bugs": {
+    "url": "https://github.com/alexcasalboni/aws-lambda-power-tuning/issues"
+  },
+  "keywords": [
+    "aws",
+    "aws lambda",
+    "serverless",
+    "serverless framework",
+    "aws step functions"
+  ],
+  "licence": "Apache",
+  "scripts": {
+    "generate": "node ./statemachine/generate.js",
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "js-yaml": "^3.8.3"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.40.0",
+    "aws-sdk-mock": "^1.6.1",
+    "expect.js": "^0.3.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0"
+  }
+}

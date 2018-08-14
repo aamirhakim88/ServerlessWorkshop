@@ -1,0 +1,9 @@
+../tabulate.py
+../__pycache__/tabulate.cpython-35.pyc
+requires.txt
+entry_points.txt
+dependency_links.txt
+top_level.txt
+SOURCES.txt
+PKG-INFO
+../../../bin/tabulate

@@ -1,0 +1,6 @@
+{
+    "lambdaARN": "arn:aws:lambda:ap-south-1:850057438846:function:workshop-2018-deployment-850057438846-WorkerLambda-CM3P5A8J7FFV",
+    "payload": {"symbol":"BOM500003"},
+    "num": 30,
+    "enableParallel": true
+}

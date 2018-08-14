@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Chaos Trader</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="jumbotron.css" rel="stylesheet">
+    <link href="spinner.css" rel="stylesheet" media="screen" />
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+      .navbar-brand {color: green !important; font-size: 30px;}
+      .option {border: 1px solid #ddd; padding: 40px; border-radius: 5px;font-size: 30px; cursor: pointer;}
+      .option:hover {background-color: #dedede;}
+      .selected {border-color: 1px solid green;}
+      .spinner {display: none; position: absolute; margin: 25% 45%;}
+      .label-default {background: none; border: 1px solid #777; color: #777;}
+      .label-default.selected {background: #5cb85c; color: #5cb85c;}
+      .stock-list {font-size: 20px;}
+      #stock-names {display: inline-block;}
+      .glyphicon-ok {color: #5cb85c;}
+      .glyphicon-remove {color: #d9534f;}
+    </style>
+
+    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+
+    <script type="text/javascript">
+
+      var apigClient
+      $.getJSON('uiconfig.json', function(data){
+          apigClient = apigClientFactory.newClient(data);
+      });
+
+      $(document).ready(function () {
+        var stocks = {
+            "BOM533022":"20 Microns Ltd.",
+            "BOM532628":"3i Infotech Ltd.",
+            "BOM523395":"3m India Ltd.",
+            "BOM590116":"7seas Technologies Ltd",
+            "BOM512161":"8k Miles Software Services Ltd.",
+            "BOM538351":"A.f. Enterprises Ltd",
+            "BOM539300":"A.k. Spintex Ltd",
+            "BOM530499":"A.k.capital Services Ltd.",
+            "BOM533292":"A2z Infra Engineering Limited",
+            "BOM531611":"Aadhaar Ventures India Ltd.",
+            "BOM530027":"Aadi Industries Ltd.",
+            "BOM531866":"Aagam Capital Ltd.",
+            "BOM539096":"Aananda Lakshmi Spinning Mills Ltd",
+            "BOM538812":"Aanchal Ispat Ltd",
+            "BOM524412":"Aarey Drugs & Pharmaceuticals Ltd.",
+            "BOM524348":"Aarti Drugs Ltd.",
+            "BOM524208":"Aarti Industries Ltd.",
+            "BOM514274":"Aarvee Denims & Exports Ltd.",
+            "BOM531731":"Aarya Global Shares And Securities Ltd.",
+            "BOM519319":"Aashee Infotech Ltd."
+        };
+        var selectedStocks = ["BOM533022",
+                              "BOM532628",
+                              "BOM523395",
+                              "BOM590116",
+                              "BOM512161",
+                              "BOM538351",
+                              "BOM539300",
+                              "BOM530499",
+                              "BOM533292",
+                              "BOM531611",
+                              "BOM530027",
+                              "BOM531866",
+                              "BOM539096",
+                              "BOM538812",
+                              "BOM524412",
+                              "BOM524348",
+                              "BOM524208",
+                              "BOM514274",
+                              "BOM531731",
+                              "BOM519319"];
+
+        $.each( stocks, function( key, value ) {
+          var selected = $.inArray(key, selectedStocks);
+          var str = "";
+          if (selected > -1) {
+            str = "<li><span class=\"label label-success selected\" data-id=\"" + key + "\">" + value + "</span></li>&nbsp;";
+          } else {
+            str = "<li><span class=\"label label-default\" data-id=\"" + key + "\">" + value + "</span></li>&nbsp;";
+          }
+          $('#stock-names').append(str);
+          console.log( key + ": " + value );
+        });
+
+        // Hide stocklist by default
+        $('.stock-list').hide();
+        $('.spinner').hide();
+
+        var myTimer = null;
+        $('.showRec').click(function () {
+          console.log('posting request...');
+
+          var params = {};
+          var body = {"symbols": selectedStocks};
+          var additionalParams = {};
+
+          apigClient.symbolsPost(params, body, additionalParams)
+            .then(function (result) {
+                var jsonObj = JSON.parse(JSON.stringify(result));
+                console.log('result: ' + jsonObj);
+            }).catch( function(result){
+            // Add error callback code here.
+            //document.getElementById('error_res').innerHTML = "Sorry, API Gateway is not responding";
+          });
+
+          $('.spinner').show();
+          //$('.stock-list').show();
+          $('.inittext').hide();
+          //$('.spinner').hide();
+          myTimer = setInterval(checkResults, 2000);
+        });
+
+        function checkResults() {
+          console.log('selected stocks: ' + selectedStocks);
+          var stock = selectedStocks.shift();
+          console.log('checking for ' + stock + ' ...');
+          var params = {'symbol': stock};
+          var body = {};
+          var additionalParams = {};
+
+
+          apigClient.symbolGet(params, body, additionalParams)
+              .then(function (result) {
+                  var jsonObj = JSON.parse(JSON.stringify(result));
+                  var answer = jsonObj.data.is_good_buy;
+                  console.log('is good buy: ' + answer);
+                  var str = "";
+                  if (answer) {
+                    //var boolVal = JSON.parse(answer);
+                      str = "<tr><td width=\"100%\">" + stocks[stock] + "</td><td><span class=\"glyphicon glyphicon-ok\"></span></td></tr>";
+                  } else {
+                      str = "<tr><td width=\"100%\">" + stocks[stock] + "</td><td><span class=\"glyphicon glyphicon-remove\"></span></td></tr>";
+                  }
+                  $('#stock-list').append(str);
+                  $('.spinner').hide();
+                  $('.stock-list').show();
+              }).catch( function(result){
+                  // Add error callback code here.
+                  console.log('putting ' + stock + ' back into the array');
+                  selectedStocks.push(stock);
+                  //document.getElementById('error_res').innerHTML = "Sorry, API Gateway is not responding";
+              });
+
+          if (selectedStocks.length == 0) {
+              clearInterval(myTimer);
+          }
+        }
+
+
+      });
+    </script>
+
+</head>
+
+<body>
+
+<div id="fade-wrapper"></div>
+
+<div class="spinner">
+    <div class="dot1"></div>
+    <div class="dot2"></div>
+</div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Chaos Trader</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <div class="container">
+        <h2>Welcome to Chaos Trader !</h2>
+        <p>
+            Pick the stocks that you are interested in and hit the submit button.
+        </p>
+        <p class="mb-30">
+           <ul id="stock-names" class="nav nav-pills" role="tablist">
+            <!--
+          <span class="label label-default">Yahoo</span>
+          <span class="label label-default">Google</span>
+          <span class="label label-success selected">Wipro</span>
+          <span class="label label-default">HDFC</span>
+          <span class="label label-default">Maruti</span>
+          <span class="label label-default">YES Bank</span>
+          <span class="label label-success selected">Tata Steel</span>
+          <span class="label label-success selected">ITC</span>
+          <span class="label label-default">Infy</span>
+          <span class="label label-default">Dr. Reddy</span>
+          <span class="label label-default">ICICI</span>
+          <span class="label label-default">BPCL</span>
+          <span class="label label-default">LT</span>
+          <span class="label label-default">ONGC</span>
+          <span class="label label-success selected">Adani</span>
+          <span class="label label-success selected">Tech M</span>
+          <span class="label label-default">GAIL</span>
+          <span class="label label-default">RELIANCE</span>
+          <span class="label label-success selected">Axis Bank</span>
+          <span class="label label-default">BPCL</span>
+          <span class="label label-default">SUN Pharma</span>
+          <span class="label label-success selected">Hindalco</span>
+          -->
+        </p>
+        <p><a class="btn btn-warning btn-lg showRec" href="#" role="button">Submit &raquo;</a></p>
+    </div>
+</div>
+
+<div class="container">
+    <p id="error_res"></p>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <h2>Recommendations</h2>
+    <div class="inittext">Hit Submit to generate recommendations...</div>
+    <table id="stock-list" class="table table-hover stock-list">
+      <tr class="success"><th>Stock</th><th>Buy/Sell</th></tr>
+      <!--
+      <tr><td width="100%">Wipro</td><td><span class="glyphicon glyphicon-ok"></span></td></tr>
+      <tr><td>Tata Steel</td><td><span class="glyphicon glyphicon-ok"></span></td></tr>
+      <tr><td>ITC</td><td><span class="glyphicon glyphicon-remove"></span></td></tr>
+      <tr><td>Adani</td><td><span class="glyphicon glyphicon-remove"></span></td></tr>
+      <tr><td>Tech M</td><td><span class="glyphicon glyphicon-ok"></span></td></tr>
+      <tr><td>Axis Bank</td><td><span class="glyphicon glyphicon-remove"></span></td></tr>
+      <tr><td>Hindalco</td><td><span class="glyphicon glyphicon-ok"></span></td></tr>
+      -->
+    </table>
+    <hr>
+
+    <footer>
+        <p>&copy; 2018 Chaos Trader.</p>
+    </footer>
+</div> <!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+    "pathParameters": {
+        "proxy": "/symbols"
+    },
+    "isBase64Encoded": false,
+    "resource": "/symbols",
+    "httpMethod": "POST",
+    "path": "/Prod/symbols",
+    "requestContext": {
+        "resourceId": "123456",
+        "extendedRequestId": null,
+        "stage": "prod",
+        "httpMethod": "POST",
+        "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+        "resourcePath": "/{proxy+}",
+        "path": "/{proxy+}",
+        "identity": {
+            "apiKey": null,
+            "caller": null,
+            "cognitoIdentityPoolId": null,
+            "userArn": null,
+            "userAgent": "Custom User Agent String",
+            "cognitoAuthenticationType": null,
+            "accountId": null,
+            "cognitoAuthenticationProvider": null,
+            "user": null,
+            "sourceIp": "127.0.0.1"
+        },
+        "apiId": "1234567890",
+        "accountId": "123456789012"
+    },
+    "body": "{ \"test\": \"body\"}"
+}

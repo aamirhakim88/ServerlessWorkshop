@@ -14,7 +14,7 @@ Once the application is deployed, you will successively apply best practices to 
 
 You will need an AWS Account to complete this workshop. You will run into issues if you are sharing the AWS Account with another user who is participating in the same workshop.
 
-####IAM Role
+#### IAM Role
 
 Create an IAM role by with these steps.
 
@@ -40,7 +40,7 @@ Create an IAM role by with these steps.
 
 You will need a local Command Line Interface to run the SAM & CloudFormation commands. Easiest option is to launch an EC2 Instance with Ubuntu OS and install required permissions.
 
-Launch an EC2 Instance with the 'ami-188fba77' AMI Id and associate the 'Serverless-Workshop-EC2-Role' role. Leave the rest of the settings at default.
+Launch an EC2 Instance with the '*<u>ami-188fba77</u>*' AMI Id and associate the 'Serverless-Workshop-EC2-Role' role. Leave the rest of the settings at default.
 
 ![EC2 AMI](./images/ec2-amazon-linux-ami.png)
 
@@ -114,8 +114,6 @@ This will create a Cloudformation Template and after successful completion, will
 ![Image](./images/cloudformation-output.png)
 
 Access the application at output URL of the "URL for ChaosTrader UI" OutputKey.
-
-Example: [chaostraderwebsitebucket402818342912.s3-website.ap-south-1.amazonaws.com/](http://chaostraderwebsitebucket402818342912.s3-website.ap-south-1.amazonaws.com/)
 
 You should see a screen similar to this.
 

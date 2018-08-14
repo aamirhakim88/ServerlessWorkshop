@@ -36,13 +36,14 @@
       .navbar-brand {color: green !important; font-size: 30px;}
       .option {border: 1px solid #ddd; padding: 40px; border-radius: 5px;font-size: 30px; cursor: pointer;}
       .option:hover {background-color: #dedede;}
-      .selected {border-color: 1px solid green;}
+      .selected {border-color: 1px solid green; line-height: 2; font-size: 20px; margin-right: 3px;}
       .spinner {display: none; position: absolute; margin: 25% 45%;}
       .label-default {background: none; border: 1px solid #777; color: #777;}
       .label-default.selected {background: #5cb85c; color: #5cb85c;}
       .stock-list {font-size: 20px;}
       #stock-names {display: inline-block;}
-      .glyphicon-ok {color: #5cb85c;}
+      #error_res {font-size: 20px; color: #5cb85c;}
+      .glyphicon-ok, .green {color: #5cb85c;}
       .glyphicon-remove {color: #d9534f;}
     </style>
 
@@ -109,6 +110,8 @@
                               "BOM531731",
                               "BOM519319"];
 
+        var stockResults = selectedStocks.slice(0);
+
         $.each( stocks, function( key, value ) {
           var selected = $.inArray(key, selectedStocks);
           var str = "";
@@ -124,13 +127,22 @@
         // Hide stocklist by default
         $('.stock-list').hide();
         $('.spinner').hide();
+        document.getElementById('error_res').innerHTML = '';
 
         var myTimer = null;
         $('.showRec').click(function () {
+          // Reset
+          clearInterval(myTimer);
+          document.getElementById('error_res').innerHTML = '';
+          $('#stock-list').empty(); // Reset the stock list
+          $('#stock-list').append("<tr class=\"success\"><th>Stock</th><th>Buy/Sell</th></tr>");
+
           console.log('posting request...');
+          stockResults = selectedStocks.slice(0);
+          console.log('stock results: ' + stockResults);
 
           var params = {};
-          var body = {"symbols": selectedStocks};
+          var body = {"symbols": stockResults};
           var additionalParams = {};
 
           apigClient.symbolsPost(params, body, additionalParams)
@@ -150,8 +162,8 @@
         });
 
         function checkResults() {
-          console.log('selected stocks: ' + selectedStocks);
-          var stock = selectedStocks.shift();
+          console.log('selected stocks: ' + stockResults);
+          var stock = stockResults.shift();
           console.log('checking for ' + stock + ' ...');
           var params = {'symbol': stock};
           var body = {};
@@ -173,14 +185,20 @@
                   $('#stock-list').append(str);
                   $('.spinner').hide();
                   $('.stock-list').show();
+
+                  if (stockResults.length == 0) {
+                    document.getElementById('error_res').innerHTML = "Done. Fetching stock recommendations is complete...";
+                    $('#stock-list').append("<tr><td colspan='2'><span class='green'>Done. Fetching stock recommendations is complete...</span></td>");
+                  }
+                  window.scrollTo(0,document.body.scrollHeight);
               }).catch( function(result){
                   // Add error callback code here.
                   console.log('putting ' + stock + ' back into the array');
-                  selectedStocks.push(stock);
+                  stockResults.push(stock);
                   //document.getElementById('error_res').innerHTML = "Sorry, API Gateway is not responding";
               });
 
-          if (selectedStocks.length == 0) {
+          if (stockResults.length == 0) {
               clearInterval(myTimer);
           }
         }
@@ -222,31 +240,11 @@
             Pick the stocks that you are interested in and hit the submit button.
         </p>
         <p class="mb-30">
-           <ul id="stock-names" class="nav nav-pills" role="tablist">
-            <!--
-          <span class="label label-default">Yahoo</span>
-          <span class="label label-default">Google</span>
-          <span class="label label-success selected">Wipro</span>
-          <span class="label label-default">HDFC</span>
-          <span class="label label-default">Maruti</span>
-          <span class="label label-default">YES Bank</span>
-          <span class="label label-success selected">Tata Steel</span>
-          <span class="label label-success selected">ITC</span>
-          <span class="label label-default">Infy</span>
-          <span class="label label-default">Dr. Reddy</span>
-          <span class="label label-default">ICICI</span>
-          <span class="label label-default">BPCL</span>
-          <span class="label label-default">LT</span>
-          <span class="label label-default">ONGC</span>
-          <span class="label label-success selected">Adani</span>
-          <span class="label label-success selected">Tech M</span>
-          <span class="label label-default">GAIL</span>
-          <span class="label label-default">RELIANCE</span>
-          <span class="label label-success selected">Axis Bank</span>
-          <span class="label label-default">BPCL</span>
-          <span class="label label-default">SUN Pharma</span>
-          <span class="label label-success selected">Hindalco</span>
-          -->
+           <div>
+               <ul id="stock-names" class="nav nav-pills" role="tablist">
+                 <!-- Stocks injected here -->
+               </ul>
+            </div>
         </p>
         <p><a class="btn btn-warning btn-lg showRec" href="#" role="button">Submit &raquo;</a></p>
     </div>

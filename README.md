@@ -125,6 +125,10 @@ This will deploy the Application for which we will apply the Optimizations. This
 
 In this module, we will instrument the Lambda Functions with AWS X-Ray and have a look at the X-Ray console to check the current performance of the application. The Instrumented Lambda code resides in `ServerlessWorkshop/1-instrument-app/after` folder. We encourage you to go through `lambda.py` files in the `ServerlessWorkshop/1-instrument-app/after/ChaosTraderMaster` and `ServerlessWorkshop/1-instrument-app/after/ChaosTraderWorker` folder.
 
+#### Lambda Instrumentation Code
+
+![Instrument Lambda Code](./images/instrument-code.png)
+
 The Lambda functions will have the following lines of code.
 
 ```python
@@ -140,12 +144,12 @@ With this code, Lambda now instruments every call it makes to other AWS Resource
 
 #### Deploy the Instrumented Application
 
-Deploy the application with the following command and choose '1' when prompted for input.
+Deploy the application with the following command and choose '2' when prompted for input.
 
 ```bash
 cd ~/ServerlessWorkshop && ./deploy.sh -s 1
 
-Enter Version Option [1 (Unoptimized) | 2 (Optimized)]: 1
+Enter Version Option [1 (Unoptimized) | 2 (Optimized)]: 2
 ```
 
 #### Run the Application
@@ -183,6 +187,10 @@ This completes the Module 1 of the Workshop.
 ## Workshop - Module 2 - Dependency Management
 
 In this module, we will first deploy the Application with a large set of dependencies and measure the performance impact. After that, we will reduce the size of the deployment package significantly and again measure the performance impact.
+
+#### Deployment Package Size Difference
+
+![Package Size Difference](./images/dep-management-difference.png)
 
 #### Deploy the Unoptimized Application with large dependency size
 
@@ -241,6 +249,10 @@ This completes the Module 2 of the workshop.
 ## Workshop - Module 3 - Connection Reuse
 
 In this module, we will first deploy the application where the a DynamoDB client will be initialized on every invocation of Lambda and measure the performance. We will then update the Application to re-use the connection between invocations and measure the performance gains.
+
+#### Connection Reuse Code
+
+![Connection Reuse](./images/connection-reuse-before-after.png)
 
 #### Deploy the Application without Connection Reuse
 

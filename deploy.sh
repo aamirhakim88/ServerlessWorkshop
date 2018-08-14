@@ -22,17 +22,22 @@ done
 
 set_version_folder()
 {
-  read -p "Enter Version Option [1 (Unoptimized) | 2 (Optimized)]: " version
-  case ${version} in
-    1)
-      VERSION_FOLDER="before"
-      break
-      ;;
-    2)
-      VERSION_FOLDER="after"
-      break
-      ;;
-  esac
+  while :
+  do
+    read -p "Enter Version Option [1 (Unoptimized) | 2 (Optimized)]: " version
+    case ${version} in
+      1)
+        VERSION_FOLDER="before"
+        break
+        ;;
+      2)
+        VERSION_FOLDER="after"
+        break
+        ;;
+      *)
+        echo "Invalid Choice"
+    esac
+  done
   return 0
 }
 

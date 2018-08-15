@@ -48,9 +48,9 @@ Outputs:
 Resources:
   ChaosTraderAPI:
     Properties:
-      Cors:
-        AllowOrigin: '''*'''
       DefinitionBody:
+        Cors:
+          AllowOrigin: '''*'''
         basePath: /
         definitions:
           Symbols:
@@ -136,7 +136,7 @@ Resources:
   MasterLambda:
     DependsOn: LambdaIAMRole
     Properties:
-      CodeUri: s3://workshop-2018-deployment-402818342912/ed62cf9bf1ba03491b0ee7d633ac9bec
+      CodeUri: s3://workshop-2018-deployment-402818342912/1048757a1bfd5b1c16b4ed24f8977f54
       Events:
         ChaosTraderSymbols:
           Properties:
@@ -171,7 +171,7 @@ Resources:
   StatusLambda:
     DependsOn: LambdaIAMRole
     Properties:
-      CodeUri: s3://workshop-2018-deployment-402818342912/dc929abc4c6d8986c897311a83559492
+      CodeUri: s3://workshop-2018-deployment-402818342912/7bbe903fdcf8db316ee9cdbd3a3bbadc
       Events:
         ChaosTraderSymbol:
           Properties:
@@ -194,7 +194,7 @@ Resources:
   WorkerLambda:
     DependsOn: LambdaIAMRole
     Properties:
-      CodeUri: s3://workshop-2018-deployment-402818342912/27d46c2c8916f9d4a21fd674971e31f3
+      CodeUri: s3://workshop-2018-deployment-402818342912/26b9d1c30893144b951b31adb4658262
       Handler: lambda.lambda_handler
       Role:
         Fn::GetAtt:

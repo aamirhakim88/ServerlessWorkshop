@@ -18,7 +18,7 @@ You will need an AWS Account to complete this workshop. You will run into issues
 
 Create an IAM role by with these steps.
 
-1. Navigate to [Create Policy Page in the IAM Console](https://console.aws.amazon.com/iam/home#/policies
+1. Navigate to [Create Policy Page in the IAM Console](https://console.aws.amazon.com/iam/home#/policies)
 
 2. Select Create Policy
 ![IAM Role](./images/create-policy.png)

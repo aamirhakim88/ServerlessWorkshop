@@ -18,23 +18,53 @@ You will need an AWS Account to complete this workshop. You will run into issues
 
 Create an IAM role by with these steps.
 
-1. Navigate to [Create Role Page in the IAM Console](https://console.aws.amazon.com/iam/home?region=ap-south-1#/roles$new?step=type)
+1. Navigate to [Create Policy Page in the IAM Console](https://console.aws.amazon.com/iam/home#/policies
 
-2. Select "EC2" as the Service that will use the role and click Next.
+2. Select Create Policy
+![IAM Role](./images/create-policy.png)
+
+3. Paste the following JSON in the JSON tab
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+4. Name the policy CloudFormationFullAccess
+
+
+5. Navigate to [Create Role Page in the IAM Console](https://console.aws.amazon.com/iam/home?region=ap-south-1#/roles$new?step=type)
+
+6. Select "EC2" as the Service that will use the role and click Next.
 
    ![IAM Role](./images/iam-role.png)
 
-3. Select the following Amazon Managed Policies from the Role List and click 'Next'.
+7. Select the following Amazon Managed Policies from the Role List and click 'Next'.
    1. AWSLambdaFullAccess
    2. AmazonAPIGatewayAdministrator
    3. CloudWatchFullAccess
    4. IAMFullAccess
    5. AWSXrayFullAccess
    6. AmazonDynamoDBFullAccess
+   7. CloudFormationFullAccess
+   8. AmazonS3FullAccess 
 
-4. Enter the Role name as 'Serverless-Workshop-EC2-Role' and click 'Create Role' Button.
+8. Enter the Role name as 'Serverless-Workshop-EC2-Role' and click 'Create Role' Button.
 
    ![Create Role](./images/create-role.png)
+
+
+
 
 #### EC2 Instance
 

@@ -22,6 +22,7 @@ def print_stats(traces):
                 durations.append(subsegment['end_time'] - subsegment['start_time'])
     if len(durations) == 0:
         print("There were no cold starts in the application.")
+        print("Trace ID = {}".format(traces[u'Traces'][0]['Id']))
         return
     print(tabulate([["Initialization {}".format(durations.index(x) + 1), x] for x in durations]))
     if len(durations) is 0:

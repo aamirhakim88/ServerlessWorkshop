@@ -238,10 +238,6 @@ Once the deployment is complete, navigate to the Application in your browser and
 
 #### Measure the Performance
 
-Navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and click on the most recent Trace. This will bring up the details of the latest Trace. Go through the values that are listed for the **Initialization** subsegment highlighted below.
-
-![Trace-Initialization](images/traces-initialization.png)
-
 To make it easier to list all the Initialization values, a script is present in the `scripts` folder. Running it will show a list of all the Initialization times and the average Initialization time across all the Lambda Functions.
 
 ```bash
@@ -251,6 +247,10 @@ cd ~/ServerlessWorkshop/2-dependency-management/scripts/ && python3 stats.py
 
 
 ![Initializations](images/trace-initialization-dependency-before.png)
+
+If you would like to check the Initialization Times in the X-Ray console, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and search for the Trace ID from the output of the previous script. This will bring up the details of the latest Trace. Go through the values that are listed for the **Initialization** subsegment highlighted below.
+
+![Trace-Initialization](images/traces-initialization.png)
 
 Note the Average Initialization time. Now, go ahead and deploy the code in the `ServerlessWorkshop/2-dependency-management/after/` folder. This folder has substantially lesser dependencies.
 
@@ -298,10 +298,6 @@ Once the deployment is complete, navigate to the Application in your browser and
 
 #### Measure the Performance
 
-Navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and click on the most recent Trace. This will bring up the details of the latest Trace. Go through the values that are listed for the **dynamodb-call** subsegment highlighted below.
-
-![DynamoDB Call Before](images/dynamo-call-before.png)
-
 Run the `stats.py` script in the `scripts` folder to see a full list of measurements for all the DynamoDB Initialization times.
 
 ```bash
@@ -311,6 +307,10 @@ cd ~/ServerlessWorkshop/3-connection-reuse/scripts && python3 stats.py
 
 
 ![Images](images/dynamo-call-before-easy.png)
+
+If you would like to check the Client Initialization time in the X-Ray Console, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and search for the Trace ID from the output of the previous script. This will bring up the details of the latest Trace. Go through the values that are listed for the **dynamodb-call** subsegment highlighted below.
+
+![DynamoDB Call Before](images/dynamo-call-before.png)
 
 #### Deploy the Connection Re-use Optimized Application
 
@@ -384,7 +384,22 @@ This will create a new Lambda Function that sends Synthetic Events to the Applic
 
 Trigger the Synthetic Events by sending a Test event to the new Lambda Function. This will send artificial events to the Application and keep a warm pool of Lambdas ready for use.
 
-Once done, trigger the application launch again by clicking the **Submit** button in the Application page. When you navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray Console and select the latest trace, you should not see any Initializations or cold starts.
+Once done, trigger the application launch again by clicking the **Submit** button in the Application page.
+
+Run the `stats.py` script in the `scripts` folder to measure the Initialization time.
+
+```bash
+cd ~/ServerlessWorkshop/4-synthetic/scripts && python3 stats.py
+```
+
+The output will be
+
+```
+There were no cold starts in the application.
+Trace ID = Trace ID = 1-5b744317-f7d5afb0f15e2ee08942eff0
+```
+
+To verify this, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray Console and search for the Trace ID from the output of the previous script. You should not see any Initializations.
 
 ![No Lambda Initialization](images/synthetic-no-initializations.png)
 
@@ -398,6 +413,7 @@ The output will be
 
 ```
 There were no cold starts in the application.
+Trace ID = Trace ID = 1-5b744317-f7d5afb0f15e2ee08942eff0
 ```
 
 This completes module 4 of the Workshop.
@@ -422,7 +438,43 @@ Once the deployment is complete, navigate to the Application in your browser and
 
 #### Measure the Performance
 
-```
+Run the `stats.py` script in the `scripts` folder to see a full list of measurements for all the Compute  times.
+
+```bash
 cd ~/ServerlessWorkshop/5-parallel-processing/scripts && python3 stats.py
 ```
+
+
+
+![Images](images/dynamo-call-before-easy.png)
+
+If you would like to check the Client Initialization time in the X-Ray Console, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and search for the Trace ID from the output of the previous script. This will bring up the details of the latest Trace. Go through the values that are listed for the **dynamodb-call** subsegment highlighted below.
+
+![DynamoDB Call Before](images/dynamo-call-before.png)
+
+#### Deploy the Connection Re-use Optimized Application
+
+```bash
+cd ~/ServerlessWorkshop && ./deploy.sh -s 3
+
+Enter Version Option [1 (Unoptimized) | 2 (Optimized)]: 2
+```
+
+#### Trigger the work flow
+
+Once the deployment is complete, navigate to the Application in your browser and click the **Submit** button.
+
+#### Measure the Performance
+
+Run the `stats.py` script folder again to measure the Performance after the optimization has been applied.
+
+```bash
+cd ~/ServerlessWorkshop/3-connection-reuse/scripts && python3 stats.py
+```
+
+
+
+![DynamoDB Initialization](images/dynamo-call-initialization-after-easy.png)
+
+You should see a decrease in the Average Initialization time.
 

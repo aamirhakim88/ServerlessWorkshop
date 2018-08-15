@@ -19,7 +19,7 @@ def print_stats(traces):
         for subsegment in subsegments:
             if subsegment['name'] == 'parallel-call':
                 durations.append(subsegment['end_time'] - subsegment['start_time'])
-    print(tabulate([["DynamoDB Call {}".format(durations.index(x) + 1), x] for x in durations]))
+    print(tabulate([["Compute Time {}".format(durations.index(x) + 1), x] for x in durations]))
     if len(durations) is 0:
         print("No Initialization Time Found. Average Initialization Time = 0.00")
     else:

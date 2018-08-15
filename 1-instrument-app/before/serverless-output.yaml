@@ -136,7 +136,7 @@ Resources:
   MasterLambda:
     DependsOn: LambdaIAMRole
     Properties:
-      CodeUri: s3://workshop-2018-deployment-850057438846/0a8b2a87ed437e97bfbd589503ec4db6
+      CodeUri: s3://workshop-2018-deployment-402818342912/3beaa5af11982df088e85c89e5a395ac
       Events:
         ChaosTraderSymbols:
           Properties:
@@ -171,7 +171,7 @@ Resources:
   StatusLambda:
     DependsOn: LambdaIAMRole
     Properties:
-      CodeUri: s3://workshop-2018-deployment-850057438846/5afb88c4d431e50e0603d99b3cb61130
+      CodeUri: s3://workshop-2018-deployment-402818342912/edf887ec2c4608e5295f2ef33ccb8e93
       Events:
         ChaosTraderSymbol:
           Properties:
@@ -194,7 +194,7 @@ Resources:
   WorkerLambda:
     DependsOn: LambdaIAMRole
     Properties:
-      CodeUri: s3://workshop-2018-deployment-850057438846/bdace755802d71bd4d1ca1b15c1dc759
+      CodeUri: s3://workshop-2018-deployment-402818342912/890992dad921d1c22da681815ffa5973
       Handler: lambda.lambda_handler
       Role:
         Fn::GetAtt:

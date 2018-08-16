@@ -74,6 +74,7 @@ Resources:
             - LambdaIAMRole
             - Arn
       Timeout: 180
+      MemorySize: 1900
       Tracing: Active
       Handler: lambda.lambda_handler
       Runtime: python3.6

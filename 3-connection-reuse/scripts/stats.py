@@ -19,9 +19,9 @@ def print_stats(traces):
         for subsegment in subsegments:
             if subsegment['name'] == 'dynamo-call':
                 durations.append(subsegment['end_time'] - subsegment['start_time'])
-    print(tabulate([["DynamoDB Initialization {}".format(durations.index(x) + 1), x] for x in durations]))
+    print(tabulate([["DynamoDB Client Initialization {}".format(durations.index(x) + 1), x] for x in durations]))
     if len(durations) is 0:
-        print("No Initialization Time Found. Average Initialization Time = 0.00")
+        print("No DynamoDB Client Initialization Time Found. Average Initialization Time = 0.00")
     else:
         print("Average DynamoDB Client Initialization Time = {}".format(sum(durations)/len(durations)))
     print("Trace ID = {}".format(traces[u'Traces'][0]['Id']))

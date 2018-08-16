@@ -450,12 +450,12 @@ cd ~/ServerlessWorkshop/5-parallel-processing/scripts && python3 stats.py
 
 If you would like to check the Compute Time Initialization time in the X-Ray Console, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and search for the Trace ID from the output of the previous script. This will bring up the details of the latest Trace. Go through the values that are listed for the **compute-time** subsegment highlighted below.
 
-![DynamoDB Call Before](images/dynamo-call-before.png)
+![DynamoDB Call Before](images/parallel-before.png)
 
 #### Deploy the Connection Re-use Optimized Application
 
 ```bash
-cd ~/ServerlessWorkshop && ./deploy.sh -s 3
+cd ~/ServerlessWorkshop && ./deploy.sh -s 5
 
 Enter Version Option [1 (Unoptimized) | 2 (Optimized)]: 2
 ```
@@ -469,12 +469,12 @@ Once the deployment is complete, navigate to the Application in your browser and
 Run the `stats.py` script folder again to measure the Performance after the optimization has been applied.
 
 ```bash
-cd ~/ServerlessWorkshop/3-connection-reuse/scripts && python3 stats.py
+cd ~/ServerlessWorkshop/5-parallel-processing/scripts && python3 stats.py
 ```
 
 
 
-![DynamoDB Initialization](images/dynamo-call-initialization-after-easy.png)
+![DynamoDB Initialization](images/parallel-after.png)
 
-You should see a decrease in the Average Initialization time.
+You should see a decrease in the Average Compute time.
 

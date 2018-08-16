@@ -17,7 +17,7 @@ def print_stats(traces):
         segment = json.loads(_segment['Document'])
         subsegments = segment.get('subsegments', [])
         for subsegment in subsegments:
-            if subsegment['name'] == 'parallel-call':
+            if subsegment['name'] == 'compute-duration':
                 durations.append(subsegment['end_time'] - subsegment['start_time'])
     print(tabulate([["Compute Time {}".format(durations.index(x) + 1), x] for x in durations]))
     if len(durations) is 0:

@@ -21,7 +21,7 @@ def print_stats(traces):
                 durations.append(subsegment['end_time'] - subsegment['start_time'])
     print(tabulate([["Compute Time {}".format(durations.index(x) + 1), x] for x in durations]))
     if len(durations) is 0:
-        print("No Initialization Time Found. Average Initialization Time = 0.00")
+        print("No Compute Times Found. Average Compute Time = 0.00")
     else:
         print("Average Computation Time = {}".format(sum(durations)/len(durations)))
     print("Trace ID = {}".format(traces[u'Traces'][0]['Id']))

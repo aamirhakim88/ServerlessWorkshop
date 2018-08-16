@@ -420,7 +420,7 @@ This completes module 4 of the Workshop.
 
 ### Workshop - Module 5 - Parallel Processing/Multithreading
 
-If you the set the Memory Capacity of the Lambda Function to be greater than 1.8 GB, the Lambda Function gets assigned 2 vCPUs of CPU capacity. You can now take advantage of Multithreading if your application supports it improve the performance.
+If you the set the Memory Capacity of the Lambda Function to be greater than 1.8 GB, the Lambda Function gets assigned 2 vCPUs of CPU capacity. You can now take advantage of Multithreading if your application supports it to improve the performance.
 
 In this module, we will first measure the Execution Time of the Lambda Functions with less than 1.8 GB of memory so that only one core is available as compute capacity. After that, we will modify the Lambda Function to take advantage of multiple vCPUs and measure the gain in performance.
 

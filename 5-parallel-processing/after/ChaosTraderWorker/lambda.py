@@ -15,7 +15,7 @@ def lambda_handler(event, context):
     if symbol == 'warm':
         time.sleep(10)
 
-    xray_recorder.begin_subsegment('parallel-call')
+    xray_recorder.begin_subsegment('compute-duration')
     is_good_buy = get_buying_advice(symbol)
     xray_recorder.end_subsegment()
     store_symbol_details(symbol, is_good_buy)

@@ -446,9 +446,9 @@ cd ~/ServerlessWorkshop/5-parallel-processing/scripts && python3 stats.py
 
 
 
-![Images](images/dynamo-call-before-easy.png)
+![Images](images/parallel-processing-before.png)
 
-If you would like to check the Client Initialization time in the X-Ray Console, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and search for the Trace ID from the output of the previous script. This will bring up the details of the latest Trace. Go through the values that are listed for the **dynamodb-call** subsegment highlighted below.
+If you would like to check the Compute Time Initialization time in the X-Ray Console, navigate to the [Traces Section](https://ap-south-1.console.aws.amazon.com/xray/home?region=ap-south-1#/traces) of the X-Ray console and search for the Trace ID from the output of the previous script. This will bring up the details of the latest Trace. Go through the values that are listed for the **compute-time** subsegment highlighted below.
 
 ![DynamoDB Call Before](images/dynamo-call-before.png)
 

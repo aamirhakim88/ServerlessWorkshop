@@ -452,7 +452,7 @@ If you would like to check the Compute Time Initialization time in the X-Ray Con
 
 ![DynamoDB Call Before](images/parallel-before.png)
 
-#### Deploy the Connection Re-use Optimized Application
+#### Deploy the Optimized Application that uses Parallel Processing
 
 ```bash
 cd ~/ServerlessWorkshop && ./deploy.sh -s 5

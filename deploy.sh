@@ -44,43 +44,36 @@ set_version_folder()
 case ${STEP} in
   0)
     STEP_FOLDER="0-chaos-trader"
-    break
     ;;
   1)
     STEP_FOLDER="1-instrument-app"
     set_version_folder
     STEP_FOLDER="${STEP_FOLDER}/${VERSION_FOLDER}"
-    break
     ;;
   2)
     STEP_FOLDER="2-dependency-management"
     set_version_folder
     STEP_FOLDER="${STEP_FOLDER}/${VERSION_FOLDER}"
-    break
     ;;
   3)
     STEP_FOLDER="3-connection-reuse"
     set_version_folder
     STEP_FOLDER="${STEP_FOLDER}/${VERSION_FOLDER}"
-    break
     ;;
   4)
     STEP_FOLDER="4-synthetic"
     set_version_folder
     STEP_FOLDER="${STEP_FOLDER}/${VERSION_FOLDER}"
-    break
     ;;
   5)
     STEP_FOLDER="5-parallel-processing"
     set_version_folder
     STEP_FOLDER="${STEP_FOLDER}/${VERSION_FOLDER}"
-    break
     ;;
   6)
     STEP_FOLDER="6-right-sizing"
     set_version_folder
     STEP_FOLDER="${STEP_FOLDER}/${VERSION_FOLDER}"
-    break
     ;;
   *)
     echo "Incorrect Input"
@@ -124,17 +117,14 @@ sam deploy \
   --stack-name workshop-2018-deployment-$(aws sts get-caller-identity --output text --query 'Account') \
   --capabilities CAPABILITY_IAM
 
-if [ ${STEP} -eq 0 ];
-then
-  aws s3 cp \
-    web \
-    s3://chaostraderwebsitebucket$(aws sts get-caller-identity --output text --query 'Account') \
-    --recursive \
-    --acl public-read \
-    > /dev/null
+aws s3 cp \
+  web \
+  s3://chaostraderwebsitebucket$(aws sts get-caller-identity --output text --query 'Account') \
+  --recursive \
+  --acl public-read \
+  > /dev/null
 
-    python3 UIConfigCreator.py
-fi
+python3 UIConfigCreator.py
 
 python3 apigwCORS.py
 

@@ -11,9 +11,9 @@ Resources:
     Properties:
       Name: ChaosTraderAPI
       StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"
       DefinitionBody:
-        Cors:
-          AllowOrigin: "'*'"
         swagger: "2.0"
         info:
           description: "ChaosTrader API"
